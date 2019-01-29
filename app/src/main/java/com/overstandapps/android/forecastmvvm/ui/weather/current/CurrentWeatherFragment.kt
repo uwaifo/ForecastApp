@@ -6,10 +6,17 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 
 import com.overstandapps.android.forecastmvvm.R
+import com.overstandapps.android.forecastmvvm.data.ApixuWeatherApiService
+import kotlinx.android.synthetic.main.current_weather_fragment.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class CurrentWeatherFragment : Fragment() {
+    //var TextView textView
 
     companion object {
         fun newInstance() = CurrentWeatherFragment()
@@ -28,6 +35,18 @@ class CurrentWeatherFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProviders.of(this).get(CurrentWeatherViewModel::class.java)
         // TODO: Use the ViewModel
+
+        //TODO . DO NOT DO THIS IN STANDARD PRODUCTION APP
+        // Declare
+        val apiService = ApixuWeatherApiService()
+
+        GlobalScope.launch(Dispatchers.Main) {
+            val currentWeatherResponse = apiService.getCurrentWeather("abuja").await()
+            current_weather_text.text = currentWeatherResponse.toString()
+            // current_weather_text.text = currentWeatherResponse.currentWeatherEntry.toString()
+        }
+        //todo End Caution
+
     }
 
 }
